@@ -13,7 +13,7 @@ process.env.NODE_ENV = process.env.BABEL_ENV = env;
 process.env.PUBLIC_URL = '/';
 
 module.exports = {
-	entry: './src/index.js',
+	entry: './src/index',
 	mode: env,
 	devServer: {
 		static: {
