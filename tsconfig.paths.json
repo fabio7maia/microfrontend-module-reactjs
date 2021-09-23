@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"@assets": ["assets"],
+			"@components": ["components"],
+			"@configs": ["configs"],
+			"@constants": ["constants"],
+			"@drawers": ["drawers"],
+			"@flows": ["flows"],
+			"@helpers": ["helpers"],
+			"@hooks": ["hooks"],
+			"@i18n": ["i18n"],
+			"@modals": ["modals"],
+			"@screens": ["screens"],
+			"@services": ["services"],
+			"@store": ["store"],
+			"@themes": ["themes"],
+			"@types": ["types"]
+		}
+	}
+}
