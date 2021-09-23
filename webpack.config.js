@@ -8,9 +8,20 @@ const FileManagerPlugin = require('filemanager-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const packageJson = require('./package.json');
 
-const env = 'development';
-process.env.NODE_ENV = process.env.BABEL_ENV = env;
-process.env.PUBLIC_URL = '/';
+const env = process.env.NODE_ENV || 'development';
+
+const transformDependencies = (deps) => {
+	const transformDependencies = {};
+
+	Object.keys(deps).forEach((key) => {
+		transformDependencies[key] = {
+			eager: true,
+			requiredVersion: deps[key],
+		};
+	});
+
+	return transformDependencies;
+};
 
 module.exports = {
 	entry: './src/index',
@@ -47,6 +58,28 @@ module.exports = {
 				},
 			},
 			{
+				test: /\.css$/i,
+				use: [
+					'style-loader',
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: {
+								plugins: [
+									[
+										'postcss-preset-env',
+										{
+											// Options
+										},
+									],
+								],
+							},
+						},
+					},
+				],
+			},
+			{
 				test: /\.tsx?$/,
 				exclude: /node_modules/,
 				use: [
@@ -73,13 +106,7 @@ module.exports = {
 				'./dashboard': './src/screens/dashboard/dashboard',
 			},
 			shared: {
-				...packageJson.dependencies,
-				react: { eager: true, requiredVersion: packageJson.dependencies.react },
-				'react-dom': { eager: true, requiredVersion: packageJson.dependencies['react-dom'] },
-				'react-redux': {
-					eager: true,
-					requiredVersion: packageJson.dependencies['react-redux'],
-				},
+				...transformDependencies(packageJson.dependencies),
 			},
 		}),
 		new HtmlWebpackPlugin({
