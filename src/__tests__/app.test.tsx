@@ -1,10 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { Router } from 'react-router-dom';
 import { App } from '../app';
+import { TestComponent } from '@components';
 
 const setup = (): JSX.Element => {
-	return <App />;
+	return (
+		<TestComponent>
+			<App />
+		</TestComponent>
+	);
 };
 
 describe('<App />', () => {
