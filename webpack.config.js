@@ -2,13 +2,25 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const packageJson = require('./package.json');
+const webpack = require('webpack');
+const dotEnv = require('dotenv');
 
 const env = process.env.NODE_ENV || 'development';
+const envVars = dotEnv.config().parsed;
+
+const transformEnvVars = (envVars) => {
+	const transformEnvVars = {};
+
+	Object.keys(envVars).forEach((key) => {
+		transformEnvVars[key] = JSON.stringify(envVars[key]);
+	});
+
+	return transformEnvVars;
+};
 
 const transformDependencies = (deps) => {
 	const transformDependencies = {};
@@ -115,7 +127,6 @@ module.exports = {
 				PUBLIC_URL: '/public',
 			},
 		}),
-		new Dotenv(),
 		new CopyWebpackPlugin({
 			patterns: [
 				{
@@ -155,5 +166,11 @@ module.exports = {
 			},
 		}),
 		new ForkTsCheckerWebpackPlugin(),
+		new webpack.DefinePlugin({
+			'process.env': {
+				NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+				...transformEnvVars(envVars),
+			},
+		}),
 	],
 };
